@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Inject } from '@angular/core';
 import { Params, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
@@ -32,8 +32,8 @@ export class DishdetailComponent implements OnInit {
 
   validationMessages = {
     'author': {
-      'required': 'Author Name is required.',
-      'minlength': 'Author Name must be at least 2 characters long.'
+      'required':      'Author Name is required.',
+      'minlength':     'Author Name must be at least 2 characters long.'
     },
 
     'comment': {
@@ -44,22 +44,21 @@ export class DishdetailComponent implements OnInit {
   constructor(private dishservice: DishService,
               private route: ActivatedRoute,
               private fb: FormBuilder,
-              private location: Location) {
-                this.createForm();
-               }
+              private location: Location,
+              @Inject('BaseURL') private BaseURL) { }
 
   ngOnInit() {
+    this.createForm();
+
     this.dishservice.getDishIds()
-      .subscribe(dishIds => this.dishIds = dishIds);
-    this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
+      .subscribe((dishIds) => this.dishIds = dishIds);
+    this.route.params
+      .pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
       .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); });
   }
 
   createForm(): void {
     let d = new Date;
-    // const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
-    // const mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d);
-    // const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
     this.commentForm = this.fb.group({
       author: ['', [Validators.required, Validators.minLength(2)] ],
       rating: 5,
