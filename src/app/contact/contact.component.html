@@ -34,7 +34,20 @@
     </div>
     <div fxFlex fxFlexOffset="20px" class="form-size">
         <h3>Send us your Feedback</h3>
-        <p> {{feedbackForm.value | json}} {{feedbackForm.status | json}} </p>
+        <mat-list *ngIf="feedback" [@expand]>
+            <mat-list-item>
+                <p matLine> First name: {{feedback.firstname}} </p>
+                <p matLine> Last name: {{feedback.lastname}} </p>
+                <p matLine> Telephone number: {{feedback.telnum}}</p>
+                <p matLine> Email: {{feedback.email}}</p>
+                <p matLine> Agree: {{feedback.agree ? "Yes": "No"}}</p>
+                <p matLine> Contact Type: {{feedback.contactType}}</p>
+                <p matLine> 
+                    <span>Message: {{feedback.message}} </span>
+                </p>
+            </mat-list-item>
+        </mat-list>
+
         <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
             <p>
                 <mat-form-field class="half-width">
